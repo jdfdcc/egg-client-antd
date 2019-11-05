@@ -67,7 +67,7 @@ export default {
   plugins,
   history: 'browser', // browser、hash 和 memory。
   publicPath: '/client/',
-  // base: '/m/',
+  base: '/client/',
   // outputPath: '/dist/static/',
   block: {
     defaultGitUrl: 'https://github.com/ant-design/pro-blocks',
