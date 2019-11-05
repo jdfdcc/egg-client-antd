@@ -66,7 +66,7 @@ if (isAntDesignProPreview) {
 export default {
   plugins,
   history: 'browser', // browser、hash 和 memory。
-  publicPath: '/client/',
+  publicPath: '/clientStatic/',
   base: '/client/',
   outputPath: '/dist/client/',
   block: {

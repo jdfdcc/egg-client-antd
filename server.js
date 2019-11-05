@@ -18,7 +18,7 @@ const app= express();
 // app.set('view engine', 'html');
 
 app.get('/client', (req, res) => {
-  res.sendFile(path.join(__dirname, '/dist/', 'index.html'));
+  res.sendFile(path.join(__dirname, '/dist/client/', 'index.html'));
 });
 
 app.listen(7878, () => {
