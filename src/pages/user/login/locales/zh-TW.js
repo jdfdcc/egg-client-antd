@@ -1,7 +1,7 @@
 export default {
   'userandlogin.login.userName': '賬戶',
   'userandlogin.login.password': '密碼',
-  'userandlogin.login.message-invalid-credentials': '賬戶或密碼錯誤（admin/ant.design）',
+  'userandlogin.login.message-invalid-credentials': '賬戶或密碼錯誤',
   'userandlogin.login.message-invalid-verification-code': '驗證碼錯誤',
   'userandlogin.login.tab-login-credentials': '賬戶密碼登錄',
   'userandlogin.login.tab-login-mobile': '手機號登錄',

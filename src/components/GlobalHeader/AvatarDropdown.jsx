@@ -9,7 +9,6 @@ import styles from './index.less';
 class AvatarDropdown extends React.Component {
   onMenuClick = event => {
     const { key } = event;
-
     if (key === 'logout') {
       const { dispatch } = this.props;
 
@@ -18,10 +17,8 @@ class AvatarDropdown extends React.Component {
           type: 'login/logout',
         });
       }
-
       return;
     }
-
     router.push(`/account/${key}`);
   };
 

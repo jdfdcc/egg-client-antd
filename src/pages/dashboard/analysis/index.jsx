@@ -30,9 +30,9 @@ class Analysis extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
-      dispatch({
-        type: 'dashboardAndanalysis/fetch',
-      });
+      // dispatch({
+      //   type: 'dashboardAndanalysis/fetch',
+      // });
     });
   }
 
@@ -137,46 +137,7 @@ class Analysis extends Component {
           <Suspense fallback={<PageLoading />}>
             <IntroduceRow loading={loading} visitData={visitData} />
           </Suspense>
-          <Suspense fallback={null}>
-            <SalesCard
-              rangePickerValue={rangePickerValue}
-              salesData={salesData}
-              isActive={this.isActive}
-              handleRangePickerChange={this.handleRangePickerChange}
-              loading={loading}
-              selectDate={this.selectDate}
-            />
-          </Suspense>
-          <Row
-            gutter={24}
-            type="flex"
-            style={{
-              marginTop: 24,
-            }}
-          >
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <TopSearch
-                  loading={loading}
-                  visitData2={visitData2}
-                  searchData={searchData}
-                  dropdownGroup={dropdownGroup}
-                />
-              </Suspense>
-            </Col>
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <ProportionSales
-                  dropdownGroup={dropdownGroup}
-                  salesType={salesType}
-                  loading={loading}
-                  salesPieData={salesPieData}
-                  handleChangeSalesType={this.handleChangeSalesType}
-                />
-              </Suspense>
-            </Col>
-          </Row>
-          <Suspense fallback={null}>
+          {/* <Suspense fallback={null}>
             <OfflineData
               activeKey={activeKey}
               loading={loading}
@@ -184,7 +145,7 @@ class Analysis extends Component {
               offlineChartData={offlineChartData}
               handleTabChange={this.handleTabChange}
             />
-          </Suspense>
+          </Suspense> */}
         </React.Fragment>
       </GridContent>
     );

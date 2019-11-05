@@ -51,6 +51,10 @@ const errorHandler = error => {
 const request = extend({
   errorHandler,
   // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  credentials: 'include',
 });
+request.interceptors.request.use((url, options) => ({
+  url: `http://127.0.0.1:8989${url}`,
+  // url: `https://jerome.chaobenxueyuan.com/${url}`,
+}));
 export default request;
