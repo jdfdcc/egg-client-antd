@@ -17,9 +17,13 @@ const app= express();
 // app.set('views', path.resolve(__dirname, './dist/'));
 // app.set('view engine', 'html');
 
-app.get('/client', (req, res) => {
+app.get('/client/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/dist/clientStatic/', 'index.html'));
 });
+
+// app.get('/client/*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '/dist/clientStatic/', 'index.html'));
+// });
 
 app.listen(7878, () => {
     console.log('Server is running at http://localhost:7878')
