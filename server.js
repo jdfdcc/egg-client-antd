@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const app= express();
+const app = express();
 
 // const resolve = file => path.resolve(__dirname, file);
 
@@ -26,5 +26,5 @@ app.get('/client/*', (req, res) => {
 // });
 
 app.listen(7878, () => {
-    console.log('Server is running at http://localhost:7878')
-})
+  console.log('Server is running at http://localhost:7878');
+});

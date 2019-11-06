@@ -1,9 +1,14 @@
-/**
- * request 网络请求工具
- * 更详细的 api 文档: https://github.com/umijs/umi-request
- */
-import { extend } from 'umi-request';
-import { notification } from 'antd';
+import axios from 'axios';
+import { notification, Modal } from 'antd';
+import router from 'umi/router';
+// create an axios instance
+const service = axios.create({
+  // baseURL: 'https://jerome.chaobenxueyuan.com',
+  baseURL: 'http://127.0.0.1:8989',
+  withCredentials: true,
+  timeout: 5000,
+});
+
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -21,40 +26,47 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
-/**
- * 异常处理程序
- */
 
-const errorHandler = error => {
-  const { response } = error;
+service.interceptors.request.use(config => config, error => Promise.reject(error));
 
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+// response interceptor
+service.interceptors.response.use(
+  response => {
+    const res = response.data;
+
+    // if the custom code is not 20000, it is judged as an error.
+    if (+res.code !== 0) {
+      if (+res.code === 50008) {
+        console.log(res);
+        // to re-login
+        Modal.error({
+          title: '你的登录已失效，请重新登录',
+          okText: '重新登录',
+          onOk: () => {
+            router.push('/user/login');
+          },
+        });
+      } else {
+        notification.error({
+          message: res.message || 'Error',
+          type: 'error',
+          duration: 5 * 1000,
+        });
+      }
+      return Promise.reject(new Error('Error'));
+    }
+    return res;
+  },
+  error => {
+    // console.log('err' + error); // for debug
+    const errorText = codeMessage[error.status] || error.statusText;
+    const { status, url } = error;
     notification.error({
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
-  }
+    return Promise.reject(error);
+  },
+);
 
-  return response;
-};
-/**
- * 配置request请求时的默认参数
- */
-
-const request = extend({
-  errorHandler,
-  // 默认错误处理
-  credentials: 'include',
-});
-request.interceptors.request.use((url, options) => ({
-  // url: `http://127.0.0.1:8989${url}`,
-  url: `https://jerome.chaobenxueyuan.com${url}`,
-}));
-export default request;
+export default service;

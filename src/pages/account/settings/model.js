@@ -19,10 +19,13 @@ const Model = {
 
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      const { code, data } = response;
+      if (data.user) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: data.user,
+        });
+      }
     },
 
     *fetchProvince(_, { call, put }) {

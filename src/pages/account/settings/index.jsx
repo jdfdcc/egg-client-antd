@@ -4,8 +4,8 @@ import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import { connect } from 'dva';
 import BaseView from './components/base';
-import BindingView from './components/binding';
-import NotificationView from './components/notification';
+// import BindingView from './components/binding';
+// import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
 
@@ -27,18 +27,6 @@ class Settings extends Component {
         <FormattedMessage
           id="accountandsettings.menuMap.security"
           defaultMessage="Security Settings"
-        />
-      ),
-      binding: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.binding"
-          defaultMessage="Account Binding"
-        />
-      ),
-      notification: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.notification"
-          defaultMessage="New Message Notification"
         />
       ),
     };
@@ -115,11 +103,11 @@ class Settings extends Component {
       case 'security':
         return <SecurityView />;
 
-      case 'binding':
-        return <BindingView />;
+      // case 'binding':
+      //   return <BindingView />;
 
-      case 'notification':
-        return <NotificationView />;
+      // case 'notification':
+      //   return <NotificationView />;
 
       default:
         break;

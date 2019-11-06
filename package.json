@@ -33,13 +33,13 @@
     }
   },
   "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": [
+    "src/**/*.less": "stylelint --syntax less",
+    "src/**/*.{js,jsx,tsx,ts,less,md,json}": [
       "prettier --write",
       "git add"
     ],
-    "**/*.{js,jsx}": "npm run lint-staged:js",
-    "**/*.{js,ts,tsx}": "npm run lint-staged:js"
+    "srx/**/*.{js,jsx}": "npm run lint-staged:js",
+    "src/**/*.{js,ts,tsx}": "npm run lint-staged:js"
   },
   "browserslist": [
     "> 1%",
@@ -54,6 +54,7 @@
     "@types/lodash.isequal": "^4.5.5",
     "@types/react-router": "^5.0.2",
     "antd": "^3.23.6",
+    "axios": "^0.19.0",
     "bizcharts": "^3.5.3-beta.0",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",

@@ -17,7 +17,7 @@ const AvatarView = ({ avatar }) => (
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
     </div>
-    <Upload fileList={[]}>
+    {/* <Upload fileList={[]}>
       <div className={styles.button_view}>
         <Button icon="upload">
           <FormattedMessage
@@ -26,7 +26,7 @@ const AvatarView = ({ avatar }) => (
           />
         </Button>
       </div>
-    </Upload>
+    </Upload> */}
   </Fragment>
 );
 
@@ -184,96 +184,6 @@ class BaseView extends Component {
                   rows={4}
                 />,
               )}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.country',
-              })}
-            >
-              {getFieldDecorator('country', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.country-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(
-                <Select
-                  style={{
-                    maxWidth: 220,
-                  }}
-                >
-                  <Option value="China">中国</Option>
-                </Select>,
-              )}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.geographic',
-              })}
-            >
-              {getFieldDecorator('geographic', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.geographic-message',
-                      },
-                      {},
-                    ),
-                  },
-                  {
-                    validator: validatorGeographic,
-                  },
-                ],
-              })(<GeographicView />)}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.address',
-              })}
-            >
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.address-message',
-                      },
-                      {},
-                    ),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem
-              label={formatMessage({
-                id: 'accountandsettings.basic.phone',
-              })}
-            >
-              {getFieldDecorator('phone', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage(
-                      {
-                        id: 'accountandsettings.basic.phone-message',
-                      },
-                      {},
-                    ),
-                  },
-                  {
-                    validator: validatorPhone,
-                  },
-                ],
-              })(<PhoneView />)}
             </FormItem>
             <Button type="primary" onClick={this.handlerSubmit}>
               <FormattedMessage

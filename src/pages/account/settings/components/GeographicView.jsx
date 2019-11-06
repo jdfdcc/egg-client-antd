@@ -22,9 +22,9 @@ class GeographicView extends Component {
     const { dispatch } = this.props;
 
     if (dispatch) {
-      dispatch({
-        type: 'accountAndsettings/fetchProvince',
-      });
+      // dispatch({
+      //   type: 'accountAndsettings/fetchProvince',
+      // });
     }
   };
 
