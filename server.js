@@ -2,15 +2,15 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// const resolve = file => path.resolve(__dirname, file);
+const resolve = file => path.resolve(__dirname, file);
 
-// const serve = (spath, cache) =>
-//   express.static(resolve(spath), {
-//     maxAge: 60 * 60 * 24 * 30,
-//   });
+const serve = (spath, cache) =>
+  express.static(resolve(spath), {
+    maxAge: 60 * 60 * 24 * 30,
+  });
 
-// app.use(express.static(path.join(__dirname, '/static/')));
-// app.use('/static/', serve('./dist/static', true));
+app.use(express.static(path.join(__dirname, '/clientStatic/')));
+app.use('/clientStatic/', serve('./dist/clientStatic', true));
 
 // // app.engine('html', engines.lodash);
 // // app.engine('ejs', engines.ejs);

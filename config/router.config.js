@@ -144,6 +144,7 @@ export default [
             name: 'account',
             icon: 'user',
             path: '/account',
+            hideInMenu: true,
             routes: [
               // {
               //   name: 'center',
