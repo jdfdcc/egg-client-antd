@@ -16,7 +16,7 @@ const Model = {
       // });
 
       // Login successfully
-      if (+response.code === 0) {
+      if (+response) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
