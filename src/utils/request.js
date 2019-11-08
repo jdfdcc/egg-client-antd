@@ -3,8 +3,8 @@ import { notification, Modal } from 'antd';
 import router from 'umi/router';
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://jerome.chaobenxueyuan.com',
-  // baseURL: 'http://127.0.0.1:8989',
+  // baseURL: 'https://jerome.chaobenxueyuan.com',
+  baseURL: 'http://127.0.0.1:8989',
   withCredentials: true,
   timeout: 5000,
 });
@@ -27,18 +27,30 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-service.interceptors.request.use(config => config, error => Promise.reject(error));
+service.interceptors.request.use(
+  config => {
+    console.log(config);
+    if (config.method === 'get' && typeof config.data === 'object') {
+      let { url } = config;
+      const { data } = config;
+      url += '?';
+      for (const key in data) {
+        url += `${key}=${data[key]}&`;
+      }
+      config.url = url;
+    }
+
+    return config;
+  },
+  error => Promise.reject(error),
+);
 
 // response interceptor
 service.interceptors.response.use(
   response => {
     const res = response.data;
-
-    // if the custom code is not 20000, it is judged as an error.
     if (+res.code !== 0) {
       if (+res.code === 50008) {
-        console.log(res);
-        // to re-login
         Modal.error({
           title: '你的登录已失效，请重新登录',
           okText: '重新登录',
@@ -53,12 +65,11 @@ service.interceptors.response.use(
           duration: 5 * 1000,
         });
       }
-      return Promise.reject(new Error('Error'));
+      return Promise.reject(false);
     }
-    return res;
+    return res.data;
   },
   error => {
-    // console.log('err' + error); // for debug
     const errorText = codeMessage[error.status] || error.statusText;
     const { status, url } = error;
     notification.error({

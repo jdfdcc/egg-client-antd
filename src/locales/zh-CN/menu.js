@@ -48,4 +48,6 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+  'menu.order': '订单',
+  'menu.order.list': '订单列表',
 };

@@ -160,6 +160,25 @@ export default [
               },
             ],
           },
+          {
+            name: 'order',
+            icon: 'file',
+            path: '/order',
+            routes: [
+              // {
+              //   name: 'center',
+              //   icon: 'smile',
+              //   path: '/account/center',
+              //   component: './account/center',
+              // },
+              {
+                name: 'list',
+                icon: 'smile',
+                path: '/order/list',
+                component: './order/list',
+              },
+            ],
+          },
           // {
           //   name: 'editor',
           //   icon: 'highlight',
