@@ -179,6 +179,31 @@ export default [
               },
             ],
           },
+          {
+            name: 'shop',
+            icon: 'shopping',
+            path: '/shop',
+            routes: [
+              // {
+              //   name: 'center',
+              //   icon: 'smile',
+              //   path: '/account/center',
+              //   component: './account/center',
+              // },
+              {
+                name: 'list',
+                icon: 'profile',
+                path: '/shop/list',
+                component: './shop/list',
+              },
+              {
+                name: 'detail',
+                icon: 'read',
+                path: '/shop/detail',
+                component: './shop/detail',
+              },
+            ],
+          },
           // {
           //   name: 'editor',
           //   icon: 'highlight',

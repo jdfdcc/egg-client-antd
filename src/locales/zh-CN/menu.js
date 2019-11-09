@@ -50,4 +50,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.order': '订单',
   'menu.order.list': '订单列表',
+  'menu.shop': '商品',
+  'menu.shop.list': '商品列表',
+  'menu.shop.detail': '新增商品',
 };

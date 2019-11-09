@@ -3,8 +3,8 @@ import { notification, Modal } from 'antd';
 import router from 'umi/router';
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://jerome.chaobenxueyuan.com',
-  // baseURL: 'http://127.0.0.1:8989',
+  // baseURL: 'https://jerome.chaobenxueyuan.com',
+  baseURL: 'http://127.0.0.1:8989',
   withCredentials: true,
   timeout: 5000,
 });
