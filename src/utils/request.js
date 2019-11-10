@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { notification, Modal } from 'antd';
 import router from 'umi/router';
-import defaultSettings from '../../config/defaultSettings';
-
+import { isAntDesignPro } from '@/utils/utils';
+let rootUrl = 'http://127.0.0.1:8989';
+if (isAntDesignPro()) {
+  rootUrl = 'https://jerome.chaobenxueyuan.com';
+}
 const service = axios.create({
-  baseURL: defaultSettings.rootUrl,
+  baseURL: rootUrl,
   withCredentials: true,
   timeout: 5000,
 });

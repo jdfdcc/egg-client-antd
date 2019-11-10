@@ -15,10 +15,10 @@ const serve = (spath, cache) =>
 app.use(express.static(path.join(__dirname, '/clientStatic/')));
 app.use('/clientStatic/', serve('./dist/clientStatic', true));
 
-app.use((req, res, next) => {
-  res.cookie('_e', 'PRO');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.cookie('_e', 'PRO');
+//   next();
+// });
 
 app.get('/client/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/dist/clientStatic/', 'index.html'));
