@@ -31,6 +31,7 @@ const fieldLabels = {
   type: '商品类型',
   remark: '商品备注',
   shopNo: '商品编号',
+  videoUrl: '视频地址',
 };
 
 @connect(({ loading }) => ({
@@ -300,6 +301,13 @@ class AdvancedForm extends Component {
                         <Option value="1">虚拟产品</Option>
                       </Select>,
                     )}
+                  </Form.Item>
+                </Col>
+                <Col lg={6} md={12} sm={24}>
+                  <Form.Item label={fieldLabels.videoUrl}>
+                    {getFieldDecorator('videoUrl', {
+                      initialValue: detail['videoUrl'],
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
               </Row>

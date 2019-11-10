@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+
+process.env.NODE_ENV = 'PRO';
+
 const resolve = file => path.resolve(__dirname, file);
 
 const serve = (spath, cache) =>

@@ -1,3 +1,7 @@
+let rootUrl = 'http://127.0.0.1:8989';
+if (process.env.DEPLOY_ENV === 'PRO'){
+  rootUrl = 'https://jerome.chaobenxueyuan.com';
+}
 export default {
   navTheme: 'dark',
   primaryColor: '#1890FF',
@@ -12,4 +16,5 @@ export default {
   title: 'Jerome System',
   pwa: false,
   iconfontUrl: '',
+  rootUrl,
 };

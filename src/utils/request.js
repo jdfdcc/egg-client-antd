@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { notification, Modal } from 'antd';
 import router from 'umi/router';
-// create an axios instance
+import defaultSettings from '../../config/defaultSettings';
+
 const service = axios.create({
-  baseURL: 'https://jerome.chaobenxueyuan.com',
-  // baseURL: 'http://127.0.0.1:8989',
+  baseURL: defaultSettings.rootUrl,
   withCredentials: true,
   timeout: 5000,
 });
