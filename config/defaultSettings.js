@@ -1,5 +1,15 @@
 let rootUrl = 'http://127.0.0.1:8989';
-if (process.env.DEPLOY_ENV === 'PRO'){
+
+const getCookie = function (name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop().split(';').shift();
+  }
+  return 0;
+};
+
+if (getCookie('_e') === 'PRO'){
   rootUrl = 'https://jerome.chaobenxueyuan.com';
 }
 export default {

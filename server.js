@@ -15,18 +15,14 @@ const serve = (spath, cache) =>
 app.use(express.static(path.join(__dirname, '/clientStatic/')));
 app.use('/clientStatic/', serve('./dist/clientStatic', true));
 
-// // app.engine('html', engines.lodash);
-// // app.engine('ejs', engines.ejs);
-// app.set('views', path.resolve(__dirname, './dist/'));
-// app.set('view engine', 'html');
+app.use((req, res, next) => {
+  res.cookie('_e', 'PRO');
+  next();
+});
 
 app.get('/client/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/dist/clientStatic/', 'index.html'));
 });
-
-// app.get('/client/*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '/dist/clientStatic/', 'index.html'));
-// });
 
 app.listen(7878, () => {
   console.log('Server is running at http://localhost:7878');
