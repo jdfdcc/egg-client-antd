@@ -9,7 +9,7 @@ export const isAntDesignPro = () => {
     return true;
   }
 
-  return window.location.hostname === 'preview.pro.ant.design';
+  return window.location.hostname === 'jerome.chaobenxueyuan.com';
 }; // 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
 
 export const isAntDesignProOrDev = () => {
