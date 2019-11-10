@@ -1,15 +1,17 @@
 let rootUrl = 'http://127.0.0.1:8989';
 
-const getCookie = function (name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop().split(';').shift();
-  }
-  return 0;
-};
+// const getCookie = function (name) {
+//   if (document) {
+//     const value = `; ${document.cookie}`;
+//     const parts = value.split(`; ${name}=`);
+//     if (parts.length === 2) {
+//       return parts.pop().split(';').shift();
+//     }
+//   }
+//   return 0;
+// };
 
-if (getCookie('_e') === 'PRO'){
+if (document && document.cookie === 'PRO'){
   rootUrl = 'https://jerome.chaobenxueyuan.com';
 }
 export default {
