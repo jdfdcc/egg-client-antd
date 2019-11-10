@@ -15,5 +15,7 @@ module.exports = {
     'no-param-reassign': 0,
     'prefer-promise-reject-errors': 0,
     'guard-for-in': 0,
+    'no-plusplus': 0,
+    'spaced-comment': 0,
   },
 };

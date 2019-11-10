@@ -76,7 +76,7 @@ service.interceptors.response.use(
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
-    return Promise.reject(error);
+    return Promise.reject(false);
   },
 );
 

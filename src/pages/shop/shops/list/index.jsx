@@ -13,23 +13,18 @@ import {
   Menu,
   Row,
   Select,
-  message,
+  Popconfirm,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import StandardTable from '@/components/StandardTable';
-import UpdateForm from './components/UpdateForm';
 import styles from './style.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ loading }) => ({
@@ -43,122 +38,84 @@ class TableList extends Component {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    data: [], // 列表数据
+    result: {
+      pagination: {
+        current: 1,
+      },
+    }, // 查询返回的服务器数据
   };
 
   columns = [
     {
-      title: '订单号',
-      dataIndex: 'orderNo',
+      title: '商品编号',
+      dataIndex: 'shopNo',
     },
     {
-      title: '订单用户ID',
-      dataIndex: 'userId',
+      title: '商品名称',
+      dataIndex: 'name',
     },
     {
-      title: '商品ID',
-      dataIndex: 'shopId',
+      title: '商品主图',
+      dataIndex: 'mainImage',
+      render: value => <img src={value} style={{ height: 50 }} alt="error" />,
+    },
+    // {
+    //   title: '商品价格',
+    //   dataIndex: 'price',
+    //   render: value => `${value}元`
+    // },
+    {
+      title: '商品描述',
+      dataIndex: 'desc',
     },
     {
-      title: '订单金额',
-      dataIndex: 'money',
-    },
-    {
-      title: '订单状态',
-      dataIndex: 'status',
-      render(val) {
-        // <Option value="1">未支付</Option>
-        //           <Option value="2">已支付</Option>
-        //           <Option value="3">已退款</Option>
-        //           <Option value="4">已取消</Option>
-        //           <Option value="99">其他</Option>
-        let text = '--';
-        switch (val) {
-          case 1:
-            text = '未支付';
-            break;
-          case 2:
-            text = '已支付';
-            break;
-          case 3:
-            text = '已退款';
-            break;
-          case 4:
-            text = '已取消';
-            break;
-          case 99:
-            text = '其他';
-            break;
-        }
-        return text;
+      title: '商品状态',
+      dataIndex: 'onLine',
+      render: value => {
+        return value === 0 ? '停售' : '在售';
       },
     },
     {
-      title: '下单时间',
-      dataIndex: 'createTime',
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    {
-      title: '订单备注',
+      title: '商品备注',
       dataIndex: 'remark',
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>退款</a>
-          {/* <Divider type="vertical" /> */}
-          {/* <a href="">订阅警报</a> */}
+          <a onClick={() => this.toShopDetail(record._id)}>详情</a>
+          <Divider type="vertical" />
+          <a onClick={() => this.delete(record._id, { onLine: +record.onLine === 0 ? 1 : 0 })}>
+            {+record.onLine === 0 ? '开售' : '停售'}
+          </a>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="是否删除当前产品"
+            onConfirm={() => {
+              this.delete(record._id);
+            }}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a style={{ color: 'red' }} href="#">
+              删除
+            </a>
+          </Popconfirm>
         </Fragment>
       ),
     },
   ];
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'common/getList',
-      payload: {
-        _model: 'Order',
-        query: {
-          pageSize: 10,
-          pageNum: 1,
-          name: '.*',
-        },
-        filters: ['name', 'createTime'],
-      },
-      success: result => {
-        console.log('成功的数据', result);
-        this.setState({
-          data: result,
-        });
-      },
-    });
+    this.handleSearch();
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-    const params = {
-      currentPage: pagination.current,
+  onPageChange = pagination => {
+    this.state.result.pagination = {
       pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
+      current: pagination.current,
     };
-
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
-    dispatch({
-      type: 'orderList/fetch',
-      payload: params,
-    });
+    this.handleSearch();
   };
 
   handleFormReset = () => {
@@ -166,10 +123,6 @@ class TableList extends Component {
     form.resetFields();
     this.setState({
       formValues: {},
-    });
-    dispatch({
-      type: 'orderList/fetch',
-      payload: {},
     });
   };
 
@@ -214,77 +167,70 @@ class TableList extends Component {
   handleSearch = e => {
     e && e.preventDefault();
     const { dispatch, form } = this.props;
+    const { result } = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const values = {
         ...fieldsValue,
       };
-      values.orderNo && (values.orderNo = `/.*${values.orderNo}.*/`);
+      values.name && (values.name = `/.*${values.name}.*/`);
       dispatch({
         type: 'common/getList',
         payload: {
-          _model: 'Order',
+          _model: 'Shop',
           query: {
             pageSize: 10,
-            pageNum: 1,
+            current: 1,
+            ...result.pagination,
             ...values,
           },
-          filters: ['name', 'createTime'],
+          filters: this.columns.map(item => item.dataIndex).filter(item => item),
         },
         success: result => {
           console.log('成功的数据', result);
           this.setState({
-            data: result,
+            result,
           });
         },
       });
     });
   };
 
-  handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
-    });
+  toShopDetail = id => {
+    if (id) {
+      router.push(`/shop/shops/detail?id=${id}`);
+    } else {
+      router.push('/shop/shops/detail');
+    }
   };
 
-  handleUpdateModalVisible = (flag, record) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
-  };
-
-  handleAdd = fields => {
+  delete = (id, params = { status: 0 }) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'orderList/add',
+      type: 'common/save',
       payload: {
-        desc: fields.desc,
+        _model: 'Shop',
+        _id: id,
+        ...params,
+      },
+      success: result => {
+        this.state.result.pagination.current = 1;
+        this.handleSearch();
       },
     });
-    message.success('添加成功');
-    this.handleModalVisible();
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'orderList/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
-    });
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
   };
 
   renderSimpleForm() {
     const { form } = this.props;
     const { getFieldDecorator } = form;
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
+      <Form
+        onSubmit={e => {
+          this.state.result.pagination.current = 1;
+          this.handleSearch(e);
+        }}
+        layout="inline"
+      >
         <Row
           gutter={{
             md: 8,
@@ -293,8 +239,8 @@ class TableList extends Component {
           }}
         >
           <Col md={8} sm={24}>
-            <FormItem label="订单号">
-              {getFieldDecorator('orderNo')(<Input placeholder="请输入" />)}
+            <FormItem label="商品名称">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -328,14 +274,16 @@ class TableList extends Component {
               >
                 重置
               </Button>
-              {/* <a
+              <Button
                 style={{
                   marginLeft: 8,
                 }}
-                onClick={this.toggleForm}
+                icon="plus"
+                type="primary"
+                onClick={() => this.toShopDetail()}
               >
-                展开 <Icon type="down" />
-              </a> */}
+                新建
+              </Button>
             </span>
           </Col>
         </Row>
@@ -481,7 +429,7 @@ class TableList extends Component {
 
   render() {
     const { loading } = this.props;
-    const { data } = this.state;
+    const { result } = this.state;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -502,39 +450,17 @@ class TableList extends Component {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-            {/* <div className={styles.tableListOperator}>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
-            </div> */}
             <StandardTable
               rowKey="_id"
               selectedRows={selectedRows}
               loading={loading}
-              data={{
-                list: data,
-              }}
+              data={result}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
+              onChange={this.onPageChange}
             />
           </div>
         </Card>
-        {/* <CreateForm {...parentMethods} modalVisible={modalVisible} /> */}
-        {/* {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null} */}
       </PageHeaderWrapper>
     );
   }

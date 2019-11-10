@@ -10,7 +10,7 @@ import {
   Row,
   Select,
   InputNumber,
-  TimePicker,
+  message,
 } from 'antd';
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -27,18 +27,20 @@ const fieldLabels = {
   mainImage: '商品主图(url地址)',
   desc: '商品描述',
   detail: '商品详情',
-  price: '商品价格',
+  priceId: '商品价格',
   type: '商品类型',
   remark: '商品备注',
+  shopNo: '商品编号',
 };
 
 @connect(({ loading }) => ({
-  submitting: loading.effects['formAndadvancedForm/submitAdvancedForm'],
+  submitting: loading.effects[('common/queryOne', 'common/save')],
 }))
 class AdvancedForm extends Component {
   state = {
     width: '100%',
     detail: {}, // 商品详情
+    priceList: [],
   };
 
   componentDidMount() {
@@ -46,11 +48,64 @@ class AdvancedForm extends Component {
       passive: true,
     });
     this.resizeFooterToolbar();
+    this.getShopDetail();
+    this.getPriceList();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }
+
+  /**
+   * 获取商品详情
+   */
+  getShopDetail = () => {
+    const { id } = this.props.location.query;
+    if (id) {
+      this.props.dispatch({
+        type: 'common/queryOne',
+        payload: {
+          _model: 'Shop',
+          params: {
+            _id: id,
+          },
+        },
+        success: data => {
+          this.setState({
+            detail: data,
+          });
+        },
+      });
+    }
+  };
+
+  /**
+   * 获取商品详情
+   */
+  getPriceList = () => {
+    this.props.dispatch({
+      type: 'common/getList',
+      payload: {
+        _model: 'Price',
+        query: {
+          pageSize: 100,
+          current: 1,
+        },
+        filters: ['uuid', 'name'],
+      },
+      success: ({ list }) => {
+        console.log('成功的数据-price', list);
+        this.setState({
+          priceList: list.map(item => {
+            return {
+              code: item._id,
+              desc: item.name,
+            };
+          }),
+        });
+      },
+    });
+  };
 
   getErrorInfo = () => {
     const {
@@ -124,14 +179,27 @@ class AdvancedForm extends Component {
     });
   };
 
-  validate = () => {
+  save = () => {
     const {
       form: { validateFieldsAndScroll },
       dispatch,
     } = this.props;
     validateFieldsAndScroll((error, values) => {
-      if (!error) {
-        console.log(values);
+      if (error) {
+        console.log(error);
+      } else {
+        dispatch({
+          type: 'common/save',
+          payload: {
+            _model: 'Shop',
+            ...this.state.detail,
+            ...values,
+          },
+          success: () => {
+            message.success('保存成功');
+            window.history.back();
+          },
+        });
       }
     });
   };
@@ -141,12 +209,17 @@ class AdvancedForm extends Component {
       form: { getFieldDecorator },
       submitting,
     } = this.props;
-    const { width, detail } = this.state;
+    const { width, detail, priceList = [] } = this.state;
     return (
       <>
         <PageHeaderWrapper>
-          <Card title="商品基本信息" className={styles.card} bordered={false}>
-            <Form layout="vertical" hideRequiredMark>
+          <Card
+            title="商品基本信息"
+            submitting={submitting}
+            className={styles.card}
+            bordered={false}
+          >
+            <Form layout="vertical">
               <Row gutter={16}>
                 <Col lg={6} md={12} sm={24}>
                   <Form.Item label={fieldLabels.name}>
@@ -162,22 +235,47 @@ class AdvancedForm extends Component {
                   </Form.Item>
                 </Col>
                 <Col lg={6} md={12} sm={24}>
-                  <Form.Item label={fieldLabels.price}>
-                    {getFieldDecorator('price', {
-                      initialValue: detail['price'],
+                  <Form.Item label={fieldLabels.priceId}>
+                    {getFieldDecorator('priceId', {
+                      initialValue: detail['priceId'],
                       rules: [
                         {
                           required: true,
                           message: '请输入',
                         },
                       ],
-                    })(<InputNumber style={{ width: '100%' }} placeholder="请输入" />)}
+                    })(
+                      <Select placeholder="请选择">
+                        {priceList &&
+                          Array.isArray(priceList) &&
+                          priceList.map(item => {
+                            return (
+                              <Option key={item.code} value={item.code}>
+                                {item.desc}
+                              </Option>
+                            );
+                          })}
+                      </Select>,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col lg={6} md={12} sm={24}>
                   <Form.Item label={fieldLabels.mainImage}>
                     {getFieldDecorator('mainImage', {
                       initialValue: detail['mainImage'],
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入',
+                        },
+                      ],
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col lg={6} md={12} sm={24}>
+                  <Form.Item label={fieldLabels.shopNo}>
+                    {getFieldDecorator('shopNo', {
+                      initialValue: detail['shopNo'],
                       rules: [
                         {
                           required: true,
@@ -204,17 +302,20 @@ class AdvancedForm extends Component {
                     )}
                   </Form.Item>
                 </Col>
-
+              </Row>
+              <Row gutter={16}>
                 <Col lg={12} md={12} sm={24}>
                   <Form.Item label={fieldLabels.desc}>
                     {getFieldDecorator('desc', {
                       initialValue: detail['desc'],
-                      rules: [
-                        {
-                          required: true,
-                          message: '请输入',
-                        },
-                      ],
+                    })(<Input.TextArea style={{ minHeight: 130 }} placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+
+                <Col lg={12} md={12} sm={24}>
+                  <Form.Item label={fieldLabels.remark}>
+                    {getFieldDecorator('remark', {
+                      initialValue: detail['remark'],
                     })(<Input.TextArea style={{ minHeight: 130 }} placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
@@ -236,7 +337,11 @@ class AdvancedForm extends Component {
           }}
         >
           {/* {this.getErrorInfo()} */}
-          <Button type="primary" onClick={this.validate} loading={submitting}>
+          <Button type="ghost" onClick={() => window.history.back()} loading={submitting}>
+            返回
+          </Button>
+
+          <Button type="primary" onClick={this.save} loading={submitting}>
             提交
           </Button>
         </FooterToolbar>

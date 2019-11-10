@@ -15,15 +15,18 @@ class Editor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.initValue();
+    const { value } = nextProps;
+    if (value) {
+      this.initValue(value);
+    }
   }
 
-  initValue = () => {
+  initValue = tempValue => {
     const { value } = this.props;
     const { editorState } = this.state;
-    if (value && !editorState) {
+    if ((value || tempValue) && !editorState) {
       this.setState({
-        editorState: BraftEditor.createEditorState(value),
+        editorState: BraftEditor.createEditorState(value || tempValue),
       });
     }
   };

@@ -49,8 +49,10 @@ export default {
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
   'menu.order': '订单',
-  'menu.order.list': '订单列表',
+  'menu.shop.orders': '订单列表',
   'menu.shop': '商品',
-  'menu.shop.list': '商品列表',
-  'menu.shop.detail': '新增商品',
+  'menu.shop.shops': '商品列表',
+  'menu.shop.shopdetail': '新增商品',
+  'menu.shop.pricedetail': '价格详情',
+  'menu.shop.prices': '价格规则表',
 };

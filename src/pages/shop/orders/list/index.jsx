@@ -20,6 +20,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import moment from 'moment';
 import StandardTable from '@/components/StandardTable';
+import UpdateForm from './components/UpdateForm';
 import styles from './style.less';
 
 const FormItem = Form.Item;
@@ -42,43 +43,72 @@ class TableList extends Component {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    data: [], // 列表数据
+    result: {}, // 列表数据
   };
 
   columns = [
     {
-      title: '商品编号',
+      title: '订单号',
       dataIndex: 'orderNo',
     },
     {
-      title: '商品名称',
-      dataIndex: 'name',
+      title: '订单用户ID',
+      dataIndex: 'userId',
     },
     {
-      title: '商品主图',
+      title: '商品ID',
       dataIndex: 'shopId',
     },
     {
-      title: '商品价格',
+      title: '订单金额',
       dataIndex: 'money',
     },
     {
-      title: '商品描述',
-      dataIndex: 'money',
-    },
-    {
-      title: '商品状态',
+      title: '订单状态',
       dataIndex: 'status',
+      render(val) {
+        // <Option value="1">未支付</Option>
+        //           <Option value="2">已支付</Option>
+        //           <Option value="3">已退款</Option>
+        //           <Option value="4">已取消</Option>
+        //           <Option value="99">其他</Option>
+        let text = '--';
+        switch (val) {
+          case 1:
+            text = '未支付';
+            break;
+          case 2:
+            text = '已支付';
+            break;
+          case 3:
+            text = '已退款';
+            break;
+          case 4:
+            text = '已取消';
+            break;
+          case 99:
+            text = '其他';
+            break;
+        }
+        return text;
+      },
     },
     {
-      title: '商品备注',
+      title: '下单时间',
+      dataIndex: 'createTime',
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '订单备注',
       dataIndex: 'remark',
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>详情</a>
+          <a onClick={() => this.handleUpdateModalVisible(true, record)}>退款</a>
+          {/* <Divider type="vertical" /> */}
+          {/* <a href="">订阅警报</a> */}
         </Fragment>
       ),
     },
@@ -89,7 +119,7 @@ class TableList extends Component {
     dispatch({
       type: 'common/getList',
       payload: {
-        _model: 'Shop',
+        _model: 'Order',
         query: {
           pageSize: 10,
           pageNum: 1,
@@ -204,7 +234,7 @@ class TableList extends Component {
         success: result => {
           console.log('成功的数据', result);
           this.setState({
-            data: result,
+            result,
           });
         },
       });
@@ -263,8 +293,8 @@ class TableList extends Component {
           }}
         >
           <Col md={8} sm={24}>
-            <FormItem label="商品名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label="订单号">
+              {getFieldDecorator('orderNo')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -298,16 +328,14 @@ class TableList extends Component {
               >
                 重置
               </Button>
-              <Button
+              {/* <a
                 style={{
                   marginLeft: 8,
                 }}
-                icon="plus"
-                type="primary"
-                onClick={() => this.handleModalVisible(true)}
+                onClick={this.toggleForm}
               >
-                新建
-              </Button>
+                展开 <Icon type="down" />
+              </a> */}
             </span>
           </Col>
         </Row>
@@ -453,7 +481,7 @@ class TableList extends Component {
 
   render() {
     const { loading } = this.props;
-    const { data } = this.state;
+    const { result } = this.state;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
@@ -474,19 +502,37 @@ class TableList extends Component {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
+            {/* <div className={styles.tableListOperator}>
+              {selectedRows.length > 0 && (
+                <span>
+                  <Button>批量操作</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </span>
+              )}
+            </div> */}
             <StandardTable
               rowKey="_id"
               selectedRows={selectedRows}
               loading={loading}
-              data={{
-                list: data,
-              }}
+              data={result}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
+        {/* <CreateForm {...parentMethods} modalVisible={modalVisible} /> */}
+        {/* {stepFormValues && Object.keys(stepFormValues).length ? (
+          <UpdateForm
+            {...updateMethods}
+            updateModalVisible={updateModalVisible}
+            values={stepFormValues}
+          />
+        ) : null} */}
       </PageHeaderWrapper>
     );
   }
