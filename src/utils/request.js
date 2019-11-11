@@ -54,13 +54,11 @@ service.interceptors.response.use(
     const res = response.data;
     if (+res.code !== 0) {
       if (+res.code === 50008) {
-        Modal.error({
-          title: '你的登录已失效，请重新登录',
-          okText: '重新登录',
-          onOk: () => {
-            router.push('/user/login');
-          },
+        notification.error({
+          message: '你的登录已失效，请重新登录',
+          description: '登录过期',
         });
+        router.push('/user/login');
       } else {
         notification.error({
           message: res.message || 'Error',

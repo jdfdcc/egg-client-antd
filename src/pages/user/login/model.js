@@ -10,12 +10,6 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      // yield put({
-      //   type: 'changeLoginStatus',
-      //   payload: response,
-      // });
-
-      // Login successfully
       if (response) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -25,7 +19,7 @@ const Model = {
 
           if (redirectUrlParams.origin === urlParams.origin) {
             redirect = redirect.substr(urlParams.origin.length);
-
+            redirect = redirect.replace('/client/', '/');
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }

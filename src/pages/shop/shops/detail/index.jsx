@@ -32,6 +32,7 @@ const fieldLabels = {
   remark: '商品备注',
   shopNo: '商品编号',
   videoUrl: '视频地址',
+  categoryId: '商品类目',
 };
 
 @connect(({ loading }) => ({
@@ -42,6 +43,7 @@ class AdvancedForm extends Component {
     width: '100%',
     detail: {}, // 商品详情
     priceList: [],
+    categorys: [],
   };
 
   componentDidMount() {
@@ -50,7 +52,7 @@ class AdvancedForm extends Component {
     });
     this.resizeFooterToolbar();
     this.getShopDetail();
-    this.getPriceList();
+    this.getCodes();
   }
 
   componentWillUnmount() {
@@ -83,8 +85,9 @@ class AdvancedForm extends Component {
   /**
    * 获取商品详情
    */
-  getPriceList = () => {
-    this.props.dispatch({
+  getCodes = () => {
+    const { dispatch } = this.props;
+    dispatch({
       type: 'common/getList',
       payload: {
         _model: 'Price',
@@ -98,6 +101,28 @@ class AdvancedForm extends Component {
         console.log('成功的数据-price', list);
         this.setState({
           priceList: list.map(item => {
+            return {
+              code: item._id,
+              desc: item.name,
+            };
+          }),
+        });
+      },
+    });
+
+    dispatch({
+      type: 'common/getList',
+      payload: {
+        _model: 'Category',
+        query: {
+          pageSize: 100,
+          current: 1,
+        },
+        filters: ['uuid', 'name'],
+      },
+      success: ({ list }) => {
+        this.setState({
+          categorys: list.map(item => {
             return {
               code: item._id,
               desc: item.name,
@@ -210,7 +235,7 @@ class AdvancedForm extends Component {
       form: { getFieldDecorator },
       submitting,
     } = this.props;
-    const { width, detail, priceList = [] } = this.state;
+    const { width, detail, priceList = [], categorys = [] } = this.state;
     return (
       <>
         <PageHeaderWrapper>
@@ -250,6 +275,31 @@ class AdvancedForm extends Component {
                         {priceList &&
                           Array.isArray(priceList) &&
                           priceList.map(item => {
+                            return (
+                              <Option key={item.code} value={item.code}>
+                                {item.desc}
+                              </Option>
+                            );
+                          })}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col lg={6} md={12} sm={24}>
+                  <Form.Item label={fieldLabels.categoryId}>
+                    {getFieldDecorator('categoryId', {
+                      initialValue: detail['categoryId'],
+                      rules: [
+                        {
+                          required: true,
+                          message: '请输入',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {categorys &&
+                          Array.isArray(categorys) &&
+                          categorys.map(item => {
                             return (
                               <Option key={item.code} value={item.code}>
                                 {item.desc}

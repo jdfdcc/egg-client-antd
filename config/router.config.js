@@ -161,6 +161,19 @@ export default [
             ],
           },
           {
+            name: 'orders',
+            icon: 'shopping',
+            path: '/orders',
+            routes: [
+              {
+                name: 'list',
+                icon: 'profile',
+                path: '/orders/list',
+                component: './orders/list',
+              },
+            ]
+          },
+          {
             name: 'shop',
             icon: 'shopping',
             path: '/shop',
@@ -191,11 +204,12 @@ export default [
                 path: '/shop/prices/detail',
                 component: './shop/prices/detail',
               },
+
               {
-                name: 'orders',
-                icon: 'file',
-                path: '/shop/orders/list',
-                component: './shop/orders/list',
+                name: 'category',
+                icon: 'profile',
+                path: '/shop/category/list',
+                component: './shop/category/list',
               },
             ],
           },

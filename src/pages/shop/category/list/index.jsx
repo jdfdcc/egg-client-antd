@@ -4,12 +4,13 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import router from 'umi/router';
 import StandardTable from '@/components/StandardTable';
+import CategoryModal from '../components/Category';
 import styles from './style.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
-const _model = 'Price';
+const _model = 'Category';
 
 @connect(({ loading }) => ({
   loading: loading.models.common,
@@ -41,10 +42,14 @@ class Index extends Component {
       dataIndex: 'remark',
     },
     {
+      title: '排序',
+      dataIndex: 'sort',
+    },
+    {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.toDetail(record._id)}>编辑</a>
+          <a onClick={() => this.toEdit(record)}>编辑</a>
           <Divider type="vertical" />
           <Popconfirm
             title="是否删除当前价格配置"
@@ -103,7 +108,7 @@ class Index extends Component {
             ...result.pagination,
             ...values,
           },
-          filters: this.columns.map(item => item.dataIndex).filter(item => item),
+          filters: ['desc', 'name', 'code', 'remark', 'sort'],
         },
         success: result => {
           this.setState({
@@ -114,12 +119,11 @@ class Index extends Component {
     });
   };
 
-  toDetail = id => {
-    if (id) {
-      router.push(`/shop/prices/detail?id=${id}`);
-    } else {
-      router.push('/shop/prices/detail');
-    }
+  toEdit = record => {
+    this.setState({
+      detail: record,
+      visible: true,
+    });
   };
 
   delete = (id, params = { status: 0 }) => {
@@ -134,6 +138,24 @@ class Index extends Component {
       success: result => {
         this.state.result.pagination.current = 1;
         this.handleSearch();
+      },
+    });
+  };
+
+  addItem = detail => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        _model: _model,
+        ...detail,
+      },
+      success: result => {
+        this.state.result.pagination.current = 1;
+        this.handleSearch();
+        this.setState({
+          visible: false,
+        });
       },
     });
   };
@@ -157,7 +179,7 @@ class Index extends Component {
           }}
         >
           <Col md={12} sm={24}>
-            <FormItem label="标题">
+            <FormItem label="名称">
               {getFieldDecorator('name')(<Input style={{ width: '100%' }} placeholder="请输入" />)}
             </FormItem>
           </Col>
@@ -180,7 +202,11 @@ class Index extends Component {
                 }}
                 icon="plus"
                 type="primary"
-                onClick={() => this.toDetail()}
+                onClick={() => {
+                  this.setState({
+                    visible: true,
+                  });
+                }}
               >
                 新建
               </Button>
@@ -193,7 +219,7 @@ class Index extends Component {
 
   render() {
     const { loading } = this.props;
-    const { result } = this.state;
+    const { result, visible, detail } = this.state;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     return (
       <PageHeaderWrapper>
@@ -210,6 +236,18 @@ class Index extends Component {
               onChange={this.onPageChange}
             />
           </div>
+
+          <CategoryModal
+            title="新增类目"
+            visible={visible}
+            value={detail}
+            onChange={this.addItem}
+            onCancel={() => {
+              this.setState({
+                visible: false,
+              });
+            }}
+          />
         </Card>
       </PageHeaderWrapper>
     );
