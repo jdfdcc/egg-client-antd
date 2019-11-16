@@ -348,7 +348,7 @@ class AdvancedForm extends Component {
                       ],
                     })(
                       <Select placeholder="请选择商品类型">
-                        <Option value="1">虚拟产品</Option>
+                        <Option value="1">视频</Option>
                       </Select>,
                     )}
                   </Form.Item>

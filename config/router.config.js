@@ -39,119 +39,12 @@ export default [
               },
             ],
           },
-          // {
-          //   path: '/form',
-          //   icon: 'form',
-          //   name: 'form',
-          //   routes: [
-          //     {
-          //       name: 'basic-form',
-          //       icon: 'smile',
-          //       path: '/form/basic-form',
-          //       component: './form/basic-form',
-          //     },
-          //     {
-          //       name: 'step-form',
-          //       icon: 'smile',
-          //       path: '/form/step-form',
-          //       component: './form/step-form',
-          //     },
-          //     {
-          //       name: 'advanced-form',
-          //       icon: 'smile',
-          //       path: '/form/advanced-form',
-          //       component: './form/advanced-form',
-          //     },
-          //   ],
-          // },
-          {
-            path: '/list',
-            icon: 'table',
-            name: 'list',
-            routes: [
-              {
-                name: 'table-list',
-                icon: 'smile',
-                path: '/list/table-list',
-                component: './list/table-list',
-              },
-            ],
-          },
-          // {
-          //   path: '/profile',
-          //   name: 'profile',
-          //   icon: 'profile',
-          //   routes: [
-          //     {
-          //       name: 'basic',
-          //       icon: 'smile',
-          //       path: '/profile/basic',
-          //       component: './profile/basic',
-          //     },
-          //     {
-          //       name: 'advanced',
-          //       icon: 'smile',
-          //       path: '/profile/advanced',
-          //       component: './profile/advanced',
-          //     },
-          //   ],
-          // },
-          // {
-          //   name: 'result',
-          //   icon: 'check-circle-o',
-          //   path: '/result',
-          //   routes: [
-          //     {
-          //       name: 'success',
-          //       icon: 'smile',
-          //       path: '/result/success',
-          //       component: './result/success',
-          //     },
-          //     {
-          //       name: 'fail',
-          //       icon: 'smile',
-          //       path: '/result/fail',
-          //       component: './result/fail',
-          //     },
-          //   ],
-          // },
-          // {
-          //   name: 'exception',
-          //   icon: 'warning',
-          //   path: '/exception',
-          //   routes: [
-          //     {
-          //       name: '403',
-          //       icon: 'smile',
-          //       path: '/exception/403',
-          //       component: './exception/403',
-          //     },
-          //     {
-          //       name: '404',
-          //       icon: 'smile',
-          //       path: '/exception/404',
-          //       component: './exception/404',
-          //     },
-          //     {
-          //       name: '500',
-          //       icon: 'smile',
-          //       path: '/exception/500',
-          //       component: './exception/500',
-          //     },
-          //   ],
-          // },
           {
             name: 'account',
             icon: 'user',
             path: '/account',
             hideInMenu: true,
             routes: [
-              // {
-              //   name: 'center',
-              //   icon: 'smile',
-              //   path: '/account/center',
-              //   component: './account/center',
-              // },
               {
                 name: 'settings',
                 icon: 'smile',
@@ -162,7 +55,7 @@ export default [
           },
           {
             name: 'orders',
-            icon: 'shopping',
+            icon: 'table',
             path: '/orders',
             routes: [
               {
@@ -213,31 +106,6 @@ export default [
               },
             ],
           },
-          // {
-          //   name: 'editor',
-          //   icon: 'highlight',
-          //   path: '/editor',
-          //   routes: [
-          //     {
-          //       name: 'flow',
-          //       icon: 'smile',
-          //       path: '/editor/flow',
-          //       component: './editor/flow',
-          //     },
-          //     {
-          //       name: 'mind',
-          //       icon: 'smile',
-          //       path: '/editor/mind',
-          //       component: './editor/mind',
-          //     },
-          //     {
-          //       name: 'koni',
-          //       icon: 'smile',
-          //       path: '/editor/koni',
-          //       component: './editor/koni',
-          //     },
-          //   ],
-          // },
           {
             path: '/',
             redirect: '/dashboard/analysis',
